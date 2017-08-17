@@ -13,6 +13,8 @@ add_action( 'wp_ajax_dbs_remove_session_item', 'dbs_remove_session_item' );
 add_action( 'wp_ajax_nopriv_dbs_remove_session_item', 'dbs_remove_session_item' );
 add_action( 'wp_ajax_dbs_remove_all_session', 'dbs_remove_all_session' );
 add_action( 'wp_ajax_nopriv_dbs_remove_all_session', 'dbs_remove_all_session' );
+add_action( 'wp_ajax_dbs_add_kv_pair', 'dbs_add_kv_pair' );
+add_action( 'wp_ajax_nopriv_dbs_add_kv_pair', 'dbs_add_kv_pair' );
 
 /**
  * [dbs_init description]
@@ -47,6 +49,11 @@ function dbs_init( $panels ) {
 				<?php endforeach; ?>
 			</ul>
 			<button type="button" class="button" id="clear-all-session">Clear All</button>
+			<form>
+				<label for="dbs-session-key">Key: <input type="text" id="dbs-session-key" name="dbs-session-key"></label>
+				<label for="dbs-session-value">Value: <input type="text" id="dbs-session-value" name="dbs-session-value"></label>
+				<input type="button" value="Add" id="dbs-add-kv-pair-button" class="button">
+			</form>
 			<?php
 			ob_end_flush();
 		}
@@ -107,6 +114,27 @@ function dbs_remove_all_session() {
 	}
 
 	session_unset();
+
+	wp_send_json_success();
+}
+
+/**
+ * [dbs_add_kv_pair description]
+ */
+function dbs_add_kv_pair() {
+	if( ! isset( $_REQUEST['nonce'] ) || ! check_ajax_referer( 'dbs-ajax-nonce', 'nonce', false ) ) {
+		wp_send_json_error( array(
+			'message' => 'Your access token is invalid.'
+		) );
+	}
+
+	if( empty( $_REQUEST['key'] ) || empty( $_REQUEST['value'] ) ) {
+		wp_send_json_error( array(
+			'message' => 'Key and value are required.'
+		) );
+	}
+
+	$_SESSION[$_REQUEST['key']] = $_REQUEST['value'];
 
 	wp_send_json_success();
 }

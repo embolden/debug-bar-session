@@ -38,4 +38,30 @@ jQuery(document).ready(function($) {
       }
     });
   });
+
+  $('#dbs-add-kv-pair-button').on('click', function(event) {
+
+    var settings = {
+      data: {
+        action: 'dbs_add_kv_pair',
+        key: $('#dbs-session-key').val(),
+        value: $('#dbs-session-value').val(),
+        nonce: ajax_helper.nonce,
+      },
+      dataType: 'json',
+      method: 'POST',
+      url: ajaxurl
+    }
+
+    $.ajax(settings)
+    .done(function(response) {
+      if( response.success === true ) {
+        $('#dbs-list').append('<li><p><strong>' + $('#dbs-session-key').val() + '</strong> - <span>' + $('#dbs-session-value').val() + '</span> <span data-dbs-key="' + $('#dbs-session-key').val() + '" class="dbs-remove">x</span></p></li>');
+        $('#dbs-session-key').val('');
+        $('#dbs-session-value').val('');
+      }
+    });
+  });
+
+
 });
