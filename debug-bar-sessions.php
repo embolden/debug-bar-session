@@ -15,6 +15,7 @@ add_action( 'wp_ajax_dbs_remove_all_session', 'dbs_remove_all_session' );
 add_action( 'wp_ajax_nopriv_dbs_remove_all_session', 'dbs_remove_all_session' );
 add_action( 'wp_ajax_dbs_add_kv_pair', 'dbs_add_kv_pair' );
 add_action( 'wp_ajax_nopriv_dbs_add_kv_pair', 'dbs_add_kv_pair' );
+add_action( 'init', 'dbs_session_start' );
 
 /**
  * [dbs_init description]
@@ -137,4 +138,17 @@ function dbs_add_kv_pair() {
 	$_SESSION[$_REQUEST['key']] = $_REQUEST['value'];
 
 	wp_send_json_success();
+}
+
+/**
+ * Initiate the session to handle the multi-page registration.
+ *
+ * @return void
+ */
+function dbs_session_start() {
+	if ( session_id() ) {
+		return;
+	}
+
+	session_start();
 }
