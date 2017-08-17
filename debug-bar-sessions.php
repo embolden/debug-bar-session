@@ -82,9 +82,9 @@ function dbs_remove_session_item() {
 		) );
 	}
 
-	if( ! isset( $_REQUEST['key'] ) || empty( $_REQUEST['key'] ) ) {
+	if( empty( $_REQUEST['key'] ) ) {
 		wp_send_json_error( array(
-			'message' => 'Access code is required.'
+			'message' => $_REQUEST['key'] . ' is required.',
 		) );
 	}
 
